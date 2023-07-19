@@ -159,9 +159,7 @@ def lend_book():
     for i, item in enumerate(lending_box):
         frame = tk.Frame(frm_book_box, relief="raised", borderwidth=1)
         lbl = tk.Label(frame, text=item["baslik"])
-        btn = tk.Button(frame, text="Remove", command=lambda: print(f"Book {i} sepetten cikarildi."))
         lbl.pack(side="left", fill=tk.X)
-        btn.pack(side="right", ipadx=1, ipady=1)
         frame.pack(fill=tk.X)
     # frame for Operation Button. includes; btn_lend_book
     btn_lend_book = tk.Button(frm_main_page, text="Teslim Et", command= btn_lend_books)
@@ -251,9 +249,7 @@ def return_book():
     for i, item in enumerate(returning_box):
         frame = tk.Frame(frm_book_box, relief="raised", borderwidth=1)
         lbl = tk.Label(frame, text=item["baslik"])
-        btn = tk.Button(frame, text="Remove", command=lambda: print(f"Book {i} sepetten cikarildi."))
         lbl.pack(side="left", fill=tk.X)
-        btn.pack(side="right", ipadx=1, ipady=1)
         frame.pack(fill=tk.X)
     # frame for Operation Button. includes; btn_lend_book
     btn_lend_book = tk.Button(frm_main_page, text="İade Al", command= btn_return_books)
@@ -492,6 +488,7 @@ def update_lending_service_status(barcode, sicil, status):
     for lended_book in lending_service:
         if(lended_book.get("book_barkod") == barcode and lended_book.get("user_sicil") == sicil):
             lended_book["status"] = status
+            lended_book["returned_date"] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
 def update_book_status(barkod, status):
     for book in books:
         if(book.get("barkod") == barkod):
