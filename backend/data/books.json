@@ -1,0 +1,1 @@
+[{"id": 0, "baslik": "Kitap 1", "yazar": "Yazar 1", "barkod": "1", "status": "available"}, {"id": 1, "baslik": "Kitap2", "yazar": "Yazar 2", "barkod": "2", "status": "unavailable"}, {"id": 2, "baslik": "kitap3", "yazar": "yazar3", "barkod": "3", "status": "available"}]

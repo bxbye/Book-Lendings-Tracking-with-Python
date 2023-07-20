@@ -506,7 +506,7 @@ def btn_return_books():
 def check_lending_cervice(book_barcode, user_sicil):
     for lended_book in lendings:
         print(lended_book)
-        if(lended_book.get("book_barkod") == book_barcode and lended_book.get("user_sicil") == user_sicil):
+        if(lended_book.get("book_barkod") == book_barcode and lended_book.get("user_sicil") == user_sicil and not lended_book.get("status") == "returned"):
             return True
     return False #if for loop finishes without return True
 def update_lendings_status(barcode, sicil, status):
