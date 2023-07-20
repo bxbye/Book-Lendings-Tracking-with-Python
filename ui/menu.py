@@ -1,5 +1,12 @@
 from datetime import datetime
 import tkinter as tk
+import os
+import sys
+sys.path.append(os.getcwd())
+from backend.models.lending import Lending
+from backend.models.user import User
+from backend.models.book import Book
+from backend.models.data_manager import DataManager
 
 # main frame
 window = tk.Tk()
@@ -25,17 +32,17 @@ def add_book():
     frame = tk.Frame(master=frm_main_page, relief="groove", borderwidth=3)
     frame.grid(row=0, column=0, sticky="nw")
 
-    lbl_baslik = tk.Label(master=frame, text="Kitap Adi", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_baslik = tk.Label(master=frame, text="Kitap Adı", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_baslik = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_baslik.grid(row=0, column=0, sticky="ew", padx=5)
     ent_baslik.grid(row=0, column=1)
 
-    lbl_yazar = tk.Label(master=frame, text="Yazar", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_yazar = tk.Label(master=frame, text="Yazar", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_yazar = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_yazar.grid(row=1, column=0, sticky="ew", padx=5)
     ent_yazar.grid(row=1, column=1)
     
-    lbl_barkod = tk.Label(master=frame, text="Barkod No", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_barkod = tk.Label(master=frame, text="Barkod No", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_barkod = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_barkod.grid(row=2, column=0, sticky="ew", padx=5)
     ent_barkod.grid(row=2, column=1)
@@ -54,27 +61,27 @@ def add_user():
     frame = tk.Frame(master=frm_main_page, relief="groove", borderwidth=3)
     frame.grid(row=0, column=0, sticky="nw")
 
-    lbl_ad = tk.Label(master=frame, text="Ad", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_ad = tk.Label(master=frame, text="Ad", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_ad = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_ad.grid(row=0, column=0, sticky="ew", padx=5)
     ent_ad.grid(row=0, column=1)
 
-    lbl_soyad = tk.Label(master=frame, text="Soyad", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_soyad = tk.Label(master=frame, text="Soyad", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_soyad = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_soyad.grid(row=1, column=0, sticky="ew", padx=5)
     ent_soyad.grid(row=1, column=1)
 
-    lbl_sicil = tk.Label(master=frame, text="Sicil No", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_sicil = tk.Label(master=frame, text="Sicil No", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_sicil = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_sicil.grid(row=2, column=0, sticky="ew", padx=5)
     ent_sicil.grid(row=2, column=1)
 
-    lbl_sinif = tk.Label(master=frame, text="Sinifi", bg="#85A389", fg="white", relief="raised", borderwidth=2)
+    lbl_sinif = tk.Label(master=frame, text="Kullanıcı Türü", bg="#85A389", fg="white", relief="raised", borderwidth=2, anchor=tk.W)
     ent_sinif = tk.Entry(master=frame, width=50, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     lbl_sinif.grid(row=3, column=0, sticky="ew", padx=5)
     ent_sinif.grid(row=3, column=1)
 
-    button = tk.Button(master=frame, text="Kullanici Ekle", command=lambda: btn_add_user(ent_ad, ent_soyad, ent_sicil, ent_sinif))
+    button = tk.Button(master=frame, text="Kullanıcı Ekle", command=lambda: btn_add_user(ent_ad, ent_soyad, ent_sicil, ent_sinif))
     button.grid(row=4, column=1, sticky="e", ipadx=5, ipady=5)
     # Update the GUI immediately to display the entry widgets
     frm_main_page.update()
@@ -88,7 +95,7 @@ def lend_book():
     # frame for scanning barcode. includes; lbl_barcode, ent_barcode, btn_barcode_add
     frm_barcode = tk.Frame(master=frm_main_page, relief="ridge", borderwidth=3)
     frm_barcode.grid(row=0, column=0, sticky="w", padx=5, pady=5)
-    lbl_barcode = tk.Label(frm_barcode, text="Barcode", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10)
+    lbl_barcode = tk.Label(frm_barcode, text="Barkod No", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10, anchor=tk.W)
     lbl_barcode.pack(side=tk.LEFT)
     ent_barcode = tk.Entry(frm_barcode, width=20, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     ent_barcode.pack(side=tk.LEFT)
@@ -101,7 +108,7 @@ def lend_book():
     if len(lending_box) > 0:
         last_item = lending_box[-1]
         the_book = {
-        "Baslik": last_item["baslik"],
+        "Kitap Adı": last_item["baslik"],
         "Yazar": last_item["yazar"],
         "Barkod No": last_item["barkod"],
         "Durumu": last_item["status"]
@@ -111,8 +118,8 @@ def lend_book():
     frm_book_info.grid(row=1, column=0, sticky="w", padx=5, pady=5)
     for index, (key, value) in enumerate(the_book.items()):
         frame = tk.Frame(frm_book_info, relief="sunken", borderwidth=1)
-        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10)
-        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=10)
+        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10, anchor=tk.W)
+        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=30, anchor=tk.W)
         key.grid(row=index, column=0)
         value.grid(row=index, column=1)
         frame.pack(fill=tk.X)
@@ -120,11 +127,11 @@ def lend_book():
     # frame for searching user. includes; lbl_sicil_no, ent_sicil_no, btn_search_user_by_sicil_no
     frm_searc_user = tk.Frame(frm_main_page, relief="ridge", borderwidth=3)
     frm_searc_user.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-    lbl_sicil_no = tk.Label(frm_searc_user, text="Sicil No", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10)
+    lbl_sicil_no = tk.Label(frm_searc_user, text="Sicil No", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10, anchor=tk.W)
     lbl_sicil_no.pack(side=tk.LEFT)
     ent_sicil_no = tk.Entry(frm_searc_user, width=20, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     ent_sicil_no.pack(side=tk.LEFT)
-    btn_search_user = tk.Button(frm_searc_user, text="Kullanici Ara", width=10, command=lambda: btn_user_search_by_sicil(ent_sicil_no, "lend_screen"))
+    btn_search_user = tk.Button(frm_searc_user, text="Kullanıcı Ara", width=10, command=lambda: btn_user_search_by_sicil(ent_sicil_no, "lend_screen"))
     btn_search_user.pack(side=tk.LEFT, ipadx=5, ipady=5)
 
     # frame_for user information. includes; lbl_user_sicil_no, lbl_user_name
@@ -136,15 +143,15 @@ def lend_book():
             "Ad": last_user["ad"],
             "Soyad": last_user["soyad"],
             "Sicil No": last_user["sicil"],
-            "Sinif": last_user["sinif"]
+            "Kullanıcı Türü": last_user["type"]
         }
 
     frm_user_info = tk.Frame(frm_main_page, relief="ridge", borderwidth=3)
     frm_user_info.grid(row=3, column=0, sticky="w", padx=5, pady=5)
     for index, (key, value) in enumerate(the_user.items()):
         frame = tk.Frame(frm_user_info, relief="sunken", borderwidth=1)
-        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10)
-        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=10)
+        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10, anchor=tk.W)
+        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=30, anchor=tk.W)
         key.grid(row=index, column=0)
         value.grid(row=index, column=1)
         frame.pack(fill=tk.X)
@@ -158,8 +165,8 @@ def lend_book():
     # otherwise, "Sepete henuz kitap eklenmedi." mesaji gosterilsin.
     for i, item in enumerate(lending_box):
         frame = tk.Frame(frm_book_box, relief="raised", borderwidth=1)
-        lbl = tk.Label(frame, text=item["baslik"])
-        lbl.pack(side="left", fill=tk.X)
+        lbl = tk.Label(frame, text=item["baslik"], bg="#85A389", fg="white", anchor=tk.W)
+        lbl.pack(side="left", fill=tk.X, expand=True)
         frame.pack(fill=tk.X)
     # frame for Operation Button. includes; btn_lend_book
     btn_lend_book = tk.Button(frm_main_page, text="Teslim Et", command= btn_lend_books)
@@ -179,7 +186,7 @@ def return_book():
     # frame for scanning barcode. includes; lbl_barcode, ent_barcode, btn_barcode_add
     frm_barcode = tk.Frame(master=frm_main_page, relief="ridge", borderwidth=3)
     frm_barcode.grid(row=0, column=0, sticky="w", padx=5, pady=5)
-    lbl_barcode = tk.Label(frm_barcode, text="Barcode", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10)
+    lbl_barcode = tk.Label(frm_barcode, text="Barcode", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10, anchor=tk.W)
     lbl_barcode.pack(side=tk.LEFT)
     ent_barcode = tk.Entry(frm_barcode, width=20, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     ent_barcode.pack(side=tk.LEFT)
@@ -192,7 +199,7 @@ def return_book():
     if len(returning_box) > 0:
         last_item = returning_box[-1]
         the_book = {
-        "Baslik": last_item["baslik"],
+        "Başlık": last_item["baslik"],
         "Yazar": last_item["yazar"],
         "Barkod No": last_item["barkod"],
         "Durumu": last_item["status"]
@@ -201,8 +208,8 @@ def return_book():
     frm_book_info.grid(row=1, column=0, sticky="w", padx=5, pady=5)
     for index, (key, value) in enumerate(the_book.items()):
         frame = tk.Frame(frm_book_info, relief="sunken", borderwidth=1)
-        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10)
-        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=10)
+        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10, anchor=tk.W)
+        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=30, anchor=tk.W)
         key.grid(row=index, column=0)
         value.grid(row=index, column=1)
         frame.pack(fill=tk.X)
@@ -210,7 +217,7 @@ def return_book():
     # frame for searching user. includes; lbl_sicil_no, ent_sicil_no, btn_search_user_by_sicil_no
     frm_searc_user = tk.Frame(frm_main_page, relief="ridge", borderwidth=3)
     frm_searc_user.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-    lbl_sicil_no = tk.Label(frm_searc_user, text="Sicil No", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10)
+    lbl_sicil_no = tk.Label(frm_searc_user, text="Sicil No", bg="#85A389", fg="white", relief="raised", borderwidth=2, width=10, anchor=tk.W)
     lbl_sicil_no.pack(side=tk.LEFT)
     ent_sicil_no = tk.Entry(frm_searc_user, width=20, bg="#F1C27B", fg="black", relief="groove", borderwidth=2)
     ent_sicil_no.pack(side=tk.LEFT)
@@ -226,15 +233,15 @@ def return_book():
             "Ad": last_user["ad"],
             "Soyad": last_user["soyad"],
             "Sicil No": last_user["sicil"],
-            "Sinif": last_user["sinif"]
+            "Kullanıcı Sınıfı": last_user["type"]
         }
 
     frm_user_info = tk.Frame(frm_main_page, relief="ridge", borderwidth=3)
     frm_user_info.grid(row=3, column=0, sticky="w", padx=5, pady=5)
     for index, (key, value) in enumerate(the_user.items()):
         frame = tk.Frame(frm_user_info, relief="sunken", borderwidth=1)
-        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10)
-        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=10)
+        key = tk.Label(frame, text=key, bg="#85A389", fg="white", width=10, anchor=tk.W)
+        value = tk.Label(frame, text=value, bg="#F1C27B", fg="black", width=10, anchor=tk.W)
         key.grid(row=index, column=0)
         value.grid(row=index, column=1)
         frame.pack(fill=tk.X)
@@ -248,8 +255,8 @@ def return_book():
     # otherwise, "Sepete henuz kitap eklenmedi." mesaji gosterilsin.
     for i, item in enumerate(returning_box):
         frame = tk.Frame(frm_book_box, relief="raised", borderwidth=1)
-        lbl = tk.Label(frame, text=item["baslik"])
-        lbl.pack(side="left", fill=tk.X)
+        lbl = tk.Label(frame, text=item["baslik"], bg="#85A389", fg="white", anchor=tk.W)
+        lbl.pack(side="left", fill=tk.X, expand=True)
         frame.pack(fill=tk.X)
     # frame for Operation Button. includes; btn_lend_book
     btn_lend_book = tk.Button(frm_main_page, text="İade Al", command= btn_return_books)
@@ -268,8 +275,7 @@ menu_items = {
     "Kullanıcı Ekle": add_user,
     "Kitap Teslimi": lend_book,
     "Kitap İade": return_book,
-    "Diğer İşlemler": other_operations,
-    "Kadir'in İşlemleri": other_operations
+    "Diğer İşlemler": other_operations
 }
 
 # add menu items
@@ -278,16 +284,23 @@ for i, (title, func) in enumerate(menu_items.items()):
     button.grid(row=i, column=0, sticky="wens", ipadx=5, ipady=5, pady=5)
 
 
+# connecting with backend
+# Instantiate DataManager class with file names
+users_file = "backend/data/users.json"
+books_file = "backend/data/books.json"
+lendings_file = "backend/data/lendings.json"
+data_manager = DataManager(users_file, books_file, lendings_file)
 
-# parameter definitions
-users = [] # keeps all user who registered to library.
-books = [] # keeps all book information which belongs to library.
-lendings = [] # keeps all lending records book by book.
 
+# reading data at the begining of the programme
+users = data_manager.read_users()
+books = data_manager.read_books()
+lendings = data_manager.read_lendings()
+
+# lists for managing ui states and interactions.
 lending_box = [] # lend book sayfasinda barkod taramasi yapildiginda eslesen kitaplar buraya eklenir.
 returning_box = [] # return book barkod taramasi yapildiginda eslesen kitaplar buraya eklenir.
 searched_user = []
-lending_service = [] # tum teslim edilen kitaplar icin bu serviste bir dict/object olusturulacaktir.
 # additional functions
 def btn_add_book(baslik, yazar, barkod):
     print(baslik.get(), yazar.get(), barkod.get())
@@ -299,22 +312,15 @@ def btn_add_book(baslik, yazar, barkod):
     if any(book.get("barkod") == barkod.get() for book in books):
         print(f"Bu kitap zaten kitaplar listesine eklenmis.")
         return
-    new_book = {
-        "id": len(books),
-        "baslik": baslik.get(),
-        "yazar": yazar.get(),
-        "barkod": barkod.get(),
-        "status": "available"
-    }
-    books.append(new_book)
+    new_book = Book(len(books), baslik.get(), yazar.get(), barkod.get())
+    # update database
+    books.append(new_book.__dict__)
+    data_manager.write_books(books)
     # delete entries
     baslik.delete(0, tk.END)
     yazar.delete(0, tk.END)
     barkod.delete(0, tk.END)
-
-    print("books")
-    for book in books:
-        print(book)
+    print(f"Yeni kitap eklendi.")
 
 # parametre olarak gelen veriler Entry objesidir. Icerideki degisiklikler formu etkilemektedir.
 def btn_add_user(ad, soyad, sicil, sinif):
@@ -327,21 +333,15 @@ def btn_add_user(ad, soyad, sicil, sinif):
     if any(user.get("sicil") == sicil.get() for user in users):
         print(f"Bu kullanici zaten users listesine eklenmis.")
         return
-    new_user = {
-        "id": len(users),
-        "ad": ad.get(),
-        "soyad": soyad.get(),
-        "sicil": sicil.get(),
-        "sinif": sinif.get()
-    }
-    users.append(new_user)
+    new_user = User(len(users), ad.get(), soyad.get(), sicil.get(), sinif.get())
+    users.append(new_user.__dict__)# to convert Class object to dict data type for save to JSON file
+    data_manager.write_users(users)
+    # clean entry fields.
     ad.delete(0, tk.END)
     soyad.delete(0, tk.END)
     sicil.delete(0, tk.END)
     sinif.delete(0, tk.END)
-    print("users")
-    for user in users:
-        print(user)
+    print(f"Yeni bir kullanici eklendi.")
 
 def btn_add_box_of_book(ent_barkod):
     barkod = ent_barkod.get()
@@ -422,18 +422,12 @@ def btn_lend_books():
         return
     user_to_lend = searched_user[-1]
     for i, book in enumerate(lending_box):
-        lending = {
-            "id": i,
-            "book_barkod": book.get("barkod"),
-            "user_sicil": user_to_lend.get("sicil"),
-            "status": "lent",
-            "lent_date": datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
-            "returned_date": None
-        }
-        # lending_service[] adinda bir listede tum kitaplara ve teslim edilen kisiye ait veriler tutulacak.
-        lending_service.append(lending)
-        # update book status from books
+        new_lending = Lending(len(lendings), user_to_lend.get("sicil"), book.get("barkod"), datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
+        lendings.append(new_lending.__dict__)
         update_book_status(book.get("barkod"), "unavailable")
+    # update json files.
+    data_manager.write_lendings(lendings)
+    data_manager.write_books(books)
     # veritabaninda da guncellenecek.
     # islemler bitince ui guncellenecek. ui'da kullanilan listeler temizlenecek.
     if(len(lending_box) <= 0):
@@ -453,7 +447,7 @@ def btn_return_books():
         return
     user_to_return = searched_user[-1]
 
-    # sepettenki her kitap icin tek tek lending_service'den kontrol yapilacak. bu kitap bu kullanici tarafindan mi alinmis?
+    # sepettenki her kitap icin tek tek lendings'den kontrol yapilacak. bu kitap bu kullanici tarafindan mi alinmis?
     check_box_books = True
     for book in returning_box:
         if(check_lending_cervice(book.get("barkod"), user_to_return.get("sicil"))):
@@ -465,9 +459,12 @@ def btn_return_books():
     if(check_box_books):
         print(f"tum kitaplar bu kisiye aittir. Hepsi topluca teslim alinabilir.")
         for rb in returning_box:
-            update_lending_service_status(rb.get("barkod"), user_to_return.get("sicil"), "returned")
+            update_lendings_status(rb.get("barkod"), user_to_return.get("sicil"), "returned")
             update_book_status(rb.get("barkod"), "available")
 
+        # update db json files
+        data_manager.write_lendings(lendings)
+        data_manager.write_books(books)
         # cache veriler silinecek.
         returning_box.clear()
         searched_user.clear()
@@ -479,13 +476,14 @@ def btn_return_books():
 
 # returns True if parameters matches otherwise book belongs to another user
 def check_lending_cervice(book_barcode, user_sicil):
-    for lended_book in lending_service:
+    for lended_book in lendings:
+        print(lended_book)
         if(lended_book.get("book_barkod") == book_barcode and lended_book.get("user_sicil") == user_sicil):
             return True
     return False #if for loop finishes without return True
-def update_lending_service_status(barcode, sicil, status):
+def update_lendings_status(barcode, sicil, status):
     # update status of matched object
-    for lended_book in lending_service:
+    for lended_book in lendings:
         if(lended_book.get("book_barkod") == barcode and lended_book.get("user_sicil") == sicil):
             lended_book["status"] = status
             lended_book["returned_date"] = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
