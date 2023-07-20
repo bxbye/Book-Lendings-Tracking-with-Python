@@ -1,5 +1,6 @@
 from datetime import datetime
 import tkinter as tk
+import os
 
 from backend.models.lending import Lending
 from backend.models.user import User
@@ -19,6 +20,28 @@ frm_menu.pack(side="left", fill=tk.Y)
 frm_main_page = tk.Frame(master=window, relief="raised", borderwidth=2)
 frm_main_page.pack(fill=tk.BOTH, expand=True)
 
+
+# its required for starting app correctly.
+def find_root_directory(marker_filename="README.md"):
+    current_directory = os.path.abspath(os.path.dirname(__file__))
+
+    while True:
+        # Check if the marker file exists in the current directory
+        marker_file = os.path.join(current_directory, marker_filename)
+        if os.path.exists(marker_file):
+            return current_directory
+
+        # Move one level up in the directory tree
+        parent_directory = os.path.abspath(os.path.join(current_directory, os.pardir))
+        
+        # If we have reached the root of the file system, break the loop
+        if parent_directory == current_directory:
+            break
+
+        current_directory = parent_directory
+
+    # If the marker file is not found, return the current working directory as the root
+    return os.path.abspath(os.getcwd())
 
 # menu functions for dynamic ui changing
 def add_book():
@@ -266,6 +289,9 @@ def return_book():
 
 def other_operations():
     window.title("EYM OTOMASYON - DİĞER İŞLEMLER")
+    # update main layout
+    for widget in frm_main_page.winfo_children():
+        widget.destroy()
     pass
 
 menu_items = {
@@ -283,10 +309,14 @@ for i, (title, func) in enumerate(menu_items.items()):
 
 
 # connecting with backend
+# pathing works all operations systems correctly.
+root_directory = find_root_directory()
+print(f"root directory: {root_directory}")
+
 # Instantiate DataManager class with file names
-users_file = "backend/data/users.json"
-books_file = "backend/data/books.json"
-lendings_file = "backend/data/lendings.json"
+users_file = os.path.join(root_directory, "backend", "data", "users.json")
+books_file = os.path.join(root_directory, "backend", "data", "books.json")
+lendings_file = os.path.join(root_directory, "backend", "data", "lendings.json")
 data_manager = DataManager(users_file, books_file, lendings_file)
 
 
@@ -492,5 +522,8 @@ def update_book_status(barkod, status):
             break
     print(f"{barkod} barkod numarali kitap durumu {status} olarak guncellendi.")
     return
+
+
+
 # update ui after each operations.
 window.mainloop()
