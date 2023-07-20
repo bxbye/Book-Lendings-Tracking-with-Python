@@ -1,8 +1,6 @@
 from datetime import datetime
 import tkinter as tk
-import os
-import sys
-sys.path.append(os.getcwd())
+
 from backend.models.lending import Lending
 from backend.models.user import User
 from backend.models.book import Book
