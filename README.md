@@ -12,3 +12,5 @@ This will create an executable file called your_app.exe in the same folder. You 
 --windowed: This option creates a windowed app that can be minimized and maximized.
 --icon: This option specifies the icon that will be used for your app.
 
+# Set up of application
+setup_fake_data.py file is going to create 10 users and 50 books for starting with fake data. 
