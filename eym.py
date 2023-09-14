@@ -287,7 +287,7 @@ def return_book():
     # Update the GUI immediately to display the entry widgets
     frm_main_page.update()
 # import function 
-from create_pdf import create_pdf
+from backend.helpers.create_pdf import create_pdf
 def other_operations():
     window.title("EYM OTOMASYON - DİĞER İŞLEMLER")
     # update main layout
@@ -299,11 +299,14 @@ def other_operations():
     frame2.grid(row=1, column=0)
 
     # mevcut kitap adetlerinin gosterilmesi
-    lbl_all_books = tk.Label(master=frame1, text="Toplam Kitap: 1000")
+    count_of_all_books = len(books)
+    lbl_all_books = tk.Label(master=frame1, text=f"Toplam Kitap: {count_of_all_books}")
     lbl_all_books.pack()
-    lbl_lended_books = tk.Label(master=frame1, text="Dagitilan Kitap: 550")
+    count_of_lent_books = len([item for item in lendings if item.get('status') == 'lent'])
+    lbl_lended_books = tk.Label(master=frame1, text=f"Dagitilan Kitap: {count_of_lent_books}")
     lbl_lended_books.pack()
-    lbl_curr_books = tk.Label(master=frame1, text="Mevcut Kitap: 450")
+    count_of_available_books = count_of_all_books - count_of_lent_books
+    lbl_curr_books = tk.Label(master=frame1, text=f"Mevcut Kitap: {count_of_available_books}")
     lbl_curr_books.pack()    
 
     # kimde hangi kitaplarin oldugunun sorgulanmasi.
@@ -552,26 +555,37 @@ def find_book_by_barcode(barcode_no):
             return book
     return None
 def search_books_by_user_sicil(sicil_no):
-    print(sicil_no.get())
+    sicil_id = sicil_no.get()
+    # find user info
+    curr_user = find_user_by_sicil_id(sicil_id)
+    if not curr_user:
+        raise Exception('Bu sicil numarali kullanici bulunamadi.')
+    print(curr_user)
     # search user sicil_no from lending records
-    lended = []
-    not_lended = []
+    records = []
     for lend_record in lendings:
-        if(lend_record.get("user_sicil") == sicil_no.get() and lend_record.get("status") == "lent"):
+        if(lend_record.get("user_sicil") == sicil_no.get()):
             book = find_book_by_barcode(lend_record.get("book_barkod"))
-            lended.append(book)
-        elif(lend_record.get("user_sicil") == sicil_no.get() and lend_record.get("status") != "lent"):
-            book = find_book_by_barcode(lend_record.get("book_barkod"))
-            not_lended.append(book)
-    if(len(lended) == 0 and len(not_lended) == 0):
+            lending_info = {
+                'title': book.get('baslik'),
+                'status': "emanet verildi" if lend_record.get('returned_date') == None else "iade edildi",
+                'lent_date': lend_record.get('lent_date'),
+                'returned_date': '' if lend_record.get('returned_date') == None else lend_record.get('lent_date')
+            }
+            records.append(lending_info)
+    if(len(records) == 0):
         print("Bu kisiye ait teslimat bilgisi yoktur.")
     
     # call create_pdf function with datas
-    print("lended books")
-    print(lended)
-    print("not lended books")
-    print(not_lended)
-    #create_pdf(lended)
+    print(records)
+    creation_date = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    create_pdf(records, curr_user, creation_date)
+# returns user if exist, otherwise return false
+def find_user_by_sicil_id(sicil_id):
+    for user in users:
+        if(user["sicil"] == sicil_id):
+            return user
+    return None
 
 # update ui after each operations.
 window.mainloop()
